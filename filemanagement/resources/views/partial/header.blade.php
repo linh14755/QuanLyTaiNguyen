@@ -17,7 +17,7 @@
                                             <i class="ti-search"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Search something...">
+                                    <input type="text" class="form-control" placeholder="Tìm kiếm...">
                                     <div class="input-group-append">
                                         <button class="btn header-search-close-btn">
                                             <i data-feather="x"></i>
@@ -147,15 +147,9 @@
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link" title="Settings" data-sidebar-target="#settings">
-                            <i class="ti-settings"></i>
-                        </a>
-                    </li>
-
-                    <li class="nav-item dropdown">
                         <a href="#" class="nav-link profile-nav-link dropdown-toggle" title="User menu"
                            data-toggle="dropdown">
-                            <span class="mr-2 d-sm-inline d-none">{{auth()->user()->name}}</span>
+                            <span class="mr-2 d-sm-inline d-none">@if(isset(auth()->user()->name)) {{auth()->user()->name}} @endif</span>
                             <figure class="avatar avatar-sm">
                                 <img src="{{asset('file-manager-template/assets/media/image/user/man_avatar3.jpg')}}"
                                      class="rounded-circle"
@@ -169,26 +163,13 @@
                                     <img src="{{asset('file-manager-template/assets/media/image/user/man_avatar3.jpg')}}"
                                          class="rounded-circle" alt="image">
                                 </figure>
-                                <h5 class="mb-0">Bony Gidden</h5>
+                                <h5 class="mb-0">@if(isset(auth()->user()->name)) {{auth()->user()->name}} @endif</h5>
                             </div>
                             <div class="list-group list-group-flush">
-                                <a href="#" class="list-group-item" data-sidebar-target="#settings">Settings</a>
-                                <a href="{{route('admin.logout')}}" class="list-group-item text-danger"
-                                   >Sign Out!</a>
+
+                                <a href="{{route('admin.logout')}}" class="list-group-item text-danger" >Đăng xuất!</a>
                             </div>
-                            <div class="pb-0 p-4">
-                                <div class="mb-4">
-                                    <h6 class="d-flex justify-content-between">
-                                        Completed Tasks
-                                        <span class="float-right">%68</span>
-                                    </h6>
-                                    <div class="progress" style="height:5px;">
-                                        <div class="progress-bar bg-primary" role="progressbar"
-                                             style="width: 68%;" aria-valuenow="68" aria-valuemin="0"
-                                             aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                     </li>
                 </ul>

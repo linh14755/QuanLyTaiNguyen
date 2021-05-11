@@ -19,36 +19,38 @@ class FileController extends Controller
 
     public function createFile()
     {
-        $listFolder = $this->fileManager->get(); //lay ca folder va file
+        $listFolder = $this->fileManager->where('type', 'folder')->get();
+
         return view('admin.uploadfile.index', compact('listFolder'));
     }
 
     public function selectedFile($id)
     {
-        $listFolder = $this->fileManager->get();
+        $listFolder = $this->fileManager->where('type', 'folder')->get();
 
-        $root_parent = $this->fileManager->where('id', $id)->first();
+        $root_parent = $this->fileManager->find($id);
 
         return view('admin.uploadfile.index', compact('listFolder', 'root_parent'));
     }
 
     public function uploadFile(Request $request, $id)
     {
-        if ($id != 0) {
-            $parent_folder = $this->fileManager->where('id', $id)->first();
-            $parent_path = $parent_folder->feature_path;
-
-            $feature_path = $parent_path;
-        } else {
-            $feature_path = 'root';
-        }
-
         try {
             DB::beginTransaction();
 
+            //Update data to file upload
+            if ($id != 0) {
+                $parent_folder = $this->fileManager->find($id);
+                $parent_path = $parent_folder->feature_path;
+
+                $feature_path = str_replace('/storage', '', $parent_path);
+            } else {
+                $feature_path = 'root';
+            }
+
             if ($request->hasFile('files_upload')) {
-                foreach ($request->files_upload as $file) {
-                    $dataUploadTrait = $this->storageTraitUploadMultipe($file, $feature_path);
+                foreach ($request->files_upload as $fileItem) {
+                    $dataUploadTrait = $this->storageTraitUploadMultipe($fileItem, $feature_path);
 
                     $extenstion = explode('.', $dataUploadTrait['file_name']);
 
@@ -66,11 +68,10 @@ class FileController extends Controller
                         'type' => 'file',
                         'extenstion' => $extenstion[1],
                         'user_id' => auth()->id(),
-                        'feature_path' => str_replace('//', '/', $dataUploadTrait['file_path']),
+                        'feature_path' => $dataUploadTrait['file_path'],
                         'parent_id' => $id,
                         'size' => $dataUploadTrait['size']
                     ]);
-
                 }
             }
 
@@ -80,10 +81,6 @@ class FileController extends Controller
         } catch (\Exception $exception) {
             Log::error('Message' . $exception->getMessage() . ' ------Line ' . $exception->getLine());
             DB::rollBack();
-            return response()->json([
-                'code' => 500,
-                'message' => 'fail'
-            ], 500);
         }
     }
 }

@@ -43,10 +43,12 @@
                 dots: false
             }
         };
+
+
     </script>
+
     <script src="{{asset('file-manager-template/assets/js/sweetalert2@10.js')}}"></script>
     <script src="{{asset('admins/main.js')}}"></script>
-
 @endsection
 
 @section('content')
@@ -71,21 +73,21 @@
             </div>
             <div class="col-xl-9">
                 <div class="content-title mt-0">
-                    <h4> {{(isset($root_parent))?str_replace('/',' > ',$root_parent->feature_path):'root' }}</h4>
+                    <h4>{{(isset($root_parent))?str_replace('/storage/app','',$root_parent->feature_path):'/root' }}</h4>
                 </div>
 
                 {{--Form them file--}}
+
                 <form action="{{route('file.upload',['id'=> $parentid])}}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label>Upload file</label>
-                        <input type="file" multiple name="files_upload[]" class="input-group">
-                        <small class="form-text text-muted">Chọn file để up load</small>
+                        <input id="files_upload" type="file" multiple name="files_upload[]" class="input-group">
+                        <small class="form-text text-muted">Chọn file để up load không được quá 40 MB</small>
                     </div>
                     <button type="submit" class="btn btn-primary">Upload</button>
                 </form>
                 {{--Form them file--}}
-
             </div>
         </div>
     </div>

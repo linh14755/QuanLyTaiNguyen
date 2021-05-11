@@ -3,27 +3,23 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\File;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 
 trait StorageFileStrait
 {
     public function createDirecrotory($feature_path)
     {
-        $feature_path = str_replace('/storage/app/', '', $feature_path);
-        $path = storage_path('app/' . $feature_path);
+        $directory = Storage::makeDirectory($feature_path);
 
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0777, true, true);
-            return Storage::url('app/' . $feature_path);
-        }
-        return null;
+        return Storage::url($directory);
     }
 
     public function storageTraitUploadMultipe($file, $folderName)
     {
         $fileNameOrigin = $file->getClientOriginalName();
-        $folderName = str_replace('/storage/app/', '', $folderName);
+        //$fileNameHash = str_random(20) . '.' . $file->getClientOriginalExtension();
+
 
         $filePath = $file->storeAs($folderName, $fileNameOrigin);
 
@@ -34,5 +30,12 @@ trait StorageFileStrait
         ];
 
         return $dataUploadTrait;
+
+        return null;
+    }
+
+    public function storageTraitMoveFile($oldfile, $newfile)
+    {
+        $path = Storage::move($oldfile, $newfile);
     }
 }

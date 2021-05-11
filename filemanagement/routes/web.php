@@ -16,17 +16,18 @@ Route::get('/admin', 'AdminController@loginAdmin');
 
 Route::post('/admin', 'AdminController@postloginAdmin');
 
+Route::get('/logout', [
+    'as' => 'admin.logout',
+    'uses' => 'AdminController@logout'
+]);
 
-Route::get('/home', function () {
-    return view('home');
-});
 
 Route::prefix('admin')->group(function () {
 
-    Route::get('/', [
-        'as' => 'admin.logout',
-        'uses' => 'AdminController@logout'
-    ]);
+
+    Route::get('/home', function () {
+        return view('home');
+    });
 
     //filemanager
     Route::prefix('filemanager')->group(function () {
@@ -47,9 +48,28 @@ Route::prefix('admin')->group(function () {
             'as' => 'folder.selected',
             'uses' => 'FileManagerController@selectedFolder'
         ]);
+
+        Route::get('/edit/{id}', [
+            'as' => 'folder.edit',
+            'uses' => 'FileManagerController@editFileOrFolder'
+        ]);
+
+        Route::post('/update/{id}', [
+            'as' => 'folder.update',
+            'uses' => 'FileManagerController@updateFileOrFolder'
+        ]);
+        Route::get('/download/{id}', [
+            'as' => 'folder.download',
+            'uses' => 'FileManagerController@downLoadFile'
+        ]);
+
+        Route::get('/delete/{id}', [
+            'as' => 'folder.delete',
+            'uses' => 'FileManagerController@deleteFile'
+        ]);
     });
 
-//Files
+    //Files
     Route::prefix('fileupload')->group(function () {
         Route::get('/', [
             'as' => 'file.index',
@@ -63,6 +83,14 @@ Route::prefix('admin')->group(function () {
         Route::post('/upload/{id}', [
             'as' => 'file.upload',
             'uses' => 'FileController@uploadFile'
+        ]);
+    });
+
+    //Dashboard
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', [
+            'as' => 'dashboard.index',
+            'uses' => 'DashboardController@index'
         ]);
     });
 

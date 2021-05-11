@@ -6,7 +6,7 @@
     </div>
     <ul>
         <li>
-            <a href="">
+            <a href="{{route('dashboard.index')}}">
                 <i class="nav-link-icon ti-pie-chart"></i>
                 <span class="nav-link-label">Dashboard</span>
             </a>

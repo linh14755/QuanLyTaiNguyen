@@ -1,8 +1,10 @@
-
 $(function () {
     $(document).on('click', '.action_add_folder', actionAddFolder);
 });
 
+$(function () {
+    $(document).on('click', '.action_delete_file_orFolder', actionDeleteFileOrFolder);
+});
 
 function actionAddFolder(event) {
     event.preventDefault(); // ngan khong cho nut Delete di toi link, van giu nguyen trang web
@@ -55,4 +57,63 @@ function actionAddFolder(event) {
         }
     })
 }
+
+function actionDeleteFileOrFolder(event) {
+    event.preventDefault(); // ngan khong cho nut Delete di toi link, van giu nguyen trang web
+    let urlRequest = $(this).data('url');
+    let that = $(this);
+
+    Swal.fire({
+        title: 'Bạn có chắc không?',
+        text: "Nó sẽ xóa toàn bộ file và folder trong cùng thư mục!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Có, xóa nó!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'GET',
+                url: urlRequest,
+
+                success: function (data) {
+                    if (data.code == 200) {
+
+                        location.reload(); //reload lai trang sau khi delete
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+    })
+}
+
+//Gioi han du lieu duoc submit
+var uploadField = document.getElementById("files_upload");
+
+if (uploadField != null) {
+    uploadField.onchange = function () {
+
+        if (this.files.length > 0) {
+            var fsize = 0;
+            for (var i = 0; i <= this.files.length - 1; i++) {
+                fsize += this.files.item(i).size;     // THE SIZE OF THE FILE.
+            }
+            if (fsize > 41943040) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'File tải lên không được quá 40 MB',
+                })
+                this.value = "";
+            }
+            ;
+        }
+
+    };
+}
+
 

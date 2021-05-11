@@ -6,6 +6,7 @@
 
 @section('js')
     {{$parentid = 0}}
+    @if(isset($root_parent)) {{$parentid = $root_parent->id}}@endif{{$parentid = 0}}
     @if(isset($root_parent)) {{$parentid = $root_parent->id}}@endif
     <script>
         let jsonDataView = {
@@ -13,6 +14,12 @@
                 {
                     'text': 'Root',
                     'type': 'folder',
+                    @if($parentid == 0)
+                    'state': {
+                        'opened': true,
+                        'selected': true
+                    },
+                    @endif
                     "a_attr": {
                         "href": "{{route('folder.selected',['id'=> 0])}}"
                     },
@@ -70,7 +77,7 @@
             </div>
             <div class="col-xl-9">
                 <div class="content-title mt-0">
-                    <h4> {{(isset($root_parent))?str_replace('/',' > ',$root_parent->feature_path):'root' }}</h4>
+                    <h4> {{(isset($root_parent))?str_replace('/storage/app','',$root_parent->feature_path):'/root' }}</h4>
                 </div>
                 <div class="d-md-flex justify-content-between mb-4">
                     <ul class="list-inline mb-3">
@@ -142,7 +149,7 @@
                             </th>
                             <th>Name</th>
                             <th>Modified</th>
-                            <th>Label</th>
+
                             <th>Members</th>
                             <th></th>
                         </tr>
@@ -158,7 +165,8 @@
                                     <td>
                                         <a href="#" class="d-flex align-items-center">
                                             <figure class="avatar avatar-sm mr-3">
-                                    <span class="avatar-title {{($listFolderAndFileForIdItem->type =='folder')?'bg-warning':''}} text-black-50 rounded-pill">
+                                    <span
+                                        class="avatar-title {{($listFolderAndFileForIdItem->type =='folder')?'bg-warning':''}} text-black-50 rounded-pill">
                                         <i class="
                             @if($listFolderAndFileForIdItem->extenstion =='jpg')
                                             ti-image
@@ -168,20 +176,20 @@
                                             ti-folder
                                             @endif
 
-"></i>
+                                            "></i>
                                     </span>
                                             </figure>
                                             <span class="d-flex flex-column">
-                                    <span class="text-primary">{{$listFolderAndFileForIdItem->name}}</span>
                                     <span
-                                        class="small font-italic">@if($listFolderAndFileForIdItem->size!=0) {{$listFolderAndFileForIdItem->size}} @endif KB</span>
+                                        class="text-primary">@if(strlen($listFolderAndFileForIdItem->name) > 30){{substr($listFolderAndFileForIdItem->name, 0, 30)}}
+                                        ... @else {{$listFolderAndFileForIdItem->name}}@endif</span>
+                                    <span
+                                        class="small font-italic">@if($listFolderAndFileForIdItem->size!=0) {{$listFolderAndFileForIdItem->size.' KB'}} @endif </span>
                                 </span>
                                         </a>
                                     </td>
                                     <td>{{$listFolderAndFileForIdItem->updated_at}}</td>
-                                    <td>
-                                        <div class="badge bg-info-bright text-info">Label</div>
-                                    </td>
+
                                     <td>
                                         <div class="avatar-group">
                                             <figure class="avatar avatar-sm"
@@ -201,14 +209,14 @@
                                                 <i class="ti-more-alt"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a href="#" class="dropdown-item" data-sidebar-target="#view-detail">View
-                                                    Details</a>
-                                                <a href="#" class="dropdown-item">Share</a>
-                                                <a href="#" class="dropdown-item">Download</a>
-                                                <a href="#" class="dropdown-item">Copy to</a>
-                                                <a href="#" class="dropdown-item">Move to</a>
-                                                <a href="#" class="dropdown-item">Rename</a>
-                                                <a href="#" class="dropdown-item">Delete</a>
+                                                @if($listFolderAndFileForIdItem->type =='file')
+                                                <a href="{{route('folder.download',['id'=>$listFolderAndFileForIdItem->id])}}"
+                                                   class="dropdown-item">Tải về</a>
+                                                @endif
+                                                <a href="{{route('folder.edit',['id'=>$listFolderAndFileForIdItem->id])}}"
+                                                   class="dropdown-item move_file_or_folder">Chỉnh sửa</a>
+                                                <a data-url="{{route('folder.delete',['id'=>$listFolderAndFileForIdItem->id])}}"
+                                                   href="" class="dropdown-item action_delete_file_orFolder">Xóa</a>
                                             </div>
                                         </div>
                                     </td>
