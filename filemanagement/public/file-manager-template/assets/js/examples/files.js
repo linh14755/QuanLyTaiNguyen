@@ -1,5 +1,5 @@
 $(function () {
-    if (typeof(jsonDataView) !== 'undefined') {
+    if (typeof (jsonDataView) !== 'undefined') {
         var jsonData = jsonDataView;
         $('#files').jstree({
             'core': jsonData,
@@ -24,12 +24,74 @@ $(function () {
             }
         })
     }
+
+
+    $(document).on('click', '#files-select-all', function () {
+        // Check/uncheck all checkboxes in the table
+        $(this).parents().find('.checkbox_children').prop('checked', $(this).prop('checked'));
+    });
+
+    //Hien thi 3 nut di chuyen, tai xuong, xoa o muc checkall
+    $(document).on('click', '#table-files .custom-control-input', function () {
+        if ($(this).prop('checked')) {
+            $('#file-actions').removeClass('d-none');
+            $(this).closest('td').closest('tr').addClass('tr-selected');
+        } else {
+            $(this).closest('td').closest('tr').removeClass('tr-selected');
+            if ($('#table-files .custom-control-input:checked').length == 0) {
+                $('#file-actions').addClass('d-none');
+            }
+        }
+    });
+
+    //Lay danh sach checked
+    $('#btn_customCheckDelete').on('click', function (event) {
+        event.preventDefault();
+        var arr_id = new Array();
+        $("input:checkbox[name=customCheck]:checked").each(function () {
+
+            // console.log($(this).val());
+            arr_id.push($(this).val());
+
+        });
+
+        let urlRequest = $(this).data('url');
+
+        Swal.fire({
+            title: 'Bạn có chắc không?',
+            text: "Nó sẽ xóa toàn bộ file và folder trong cùng thư mục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Có, xóa nó!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'GET',
+                    url: urlRequest,
+                    data: {arr_id: arr_id},
+
+                    success: function (data) {
+                        if (data.code == 200) {
+
+                            location.reload(); //reload lai trang sau khi delete
+                        }
+                    },
+                    error: function () {
+
+                    }
+                });
+            }
+        })
+    })
+
 });
 
 
-
+//Tao cay thu muc
 $(function () {
-    if (typeof(jsonDataViewParentId) !== 'undefined') {
+    if (typeof (jsonDataViewParentId) !== 'undefined') {
         var jsonData = jsonDataViewParentId;
         $('#files_parent_id').jstree({
             'core': jsonData,
@@ -46,7 +108,7 @@ $(function () {
 
 
         $('#files_parent_id').on('click', function (e) {
-            var parent_id = e.target.id.replace('_anchor','');
+            var parent_id = e.target.id.replace('_anchor', '');
             document.getElementById("parent_id").value = parent_id;
         })
     }

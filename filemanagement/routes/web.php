@@ -68,6 +68,10 @@ Route::prefix('admin')->group(function () {
             'as' => 'folder.delete',
             'uses' => 'FileManagerController@deleteFile'
         ]);
+        Route::get('/multi_delete', [
+            'as' => 'folder.multi_delete',
+            'uses' => 'FileManagerController@deleteMultiFile'
+        ]);
     });
 
     //Files

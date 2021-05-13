@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Traits\StorageFileStrait;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class FileManagerController extends Controller
 {
@@ -25,6 +26,7 @@ class FileManagerController extends Controller
     public function index()
     {
         $listFolder = $this->fileManager->where('type', 'folder')->get();
+
 
         $feature_path_show = 'root';
 
@@ -87,7 +89,7 @@ class FileManagerController extends Controller
 
     public function selectedFolder($id)
     {
-        $listFolderAndFileForId = $this->fileManager->where('parent_id', $id)->latest()->paginate(20); //lay ca folder va file theo parent id
+        $listFolderAndFileForId = $this->fileManager->where('parent_id', $id)->get(); //lay ca folder va file theo parent id
         $listFolder = $this->fileManager->where('type', 'folder')->get();
 
         $root_parent = $this->fileManager->find($id);
@@ -140,8 +142,9 @@ class FileManagerController extends Controller
     public function downLoadFile($id)
     {
         $filedownload = $this->fileManager->find($id);
-
-        return Storage::download(str_replace('/storage/', '', $filedownload->feature_path));
+        if ($filedownload->type == 'file') {
+            return Storage::download(str_replace('/storage/', '', $filedownload->feature_path));
+        }
     }
 
     public function deleteFile($id)
@@ -173,6 +176,18 @@ class FileManagerController extends Controller
                 'message' => 'fail'
             ], 500);
         }
+    }
+
+    public function deleteMultiFile(Request $request)
+    {
+        foreach ($request->arr_id as $id) {
+            $this->deleteFile($id);
+        }
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'success',
+        ], 200);
     }
 
 }

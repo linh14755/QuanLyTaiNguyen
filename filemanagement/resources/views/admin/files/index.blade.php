@@ -6,6 +6,16 @@
 
 @section('js')
     {{$parentid = 0}}
+
+    {{$images_files = 0}}
+    {{$images_size = 0}}
+
+    {{$videos_files = 0}}
+    {{$videos_size = 0}}
+
+    {{$document_files = 0}}
+    {{$document_size = 0}}
+
     @if(isset($root_parent)) {{$parentid = $root_parent->id}}@endif{{$parentid = 0}}
     @if(isset($root_parent)) {{$parentid = $root_parent->id}}@endif
     <script>
@@ -72,25 +82,23 @@
                     {{--Cay thu muc--}}
                     <div id="files"></div>
                     {{--Cay thu muc--}}
-
                 </div>
             </div>
             <div class="col-xl-9">
                 <div class="content-title mt-0">
-                    <h4> {{(isset($root_parent))?str_replace('/storage/app','',$root_parent->feature_path):'/root' }}</h4>
+                    <h4>{{(isset($root_parent))?str_replace('/storage/app','',$root_parent->feature_path):'/root' }}</h4>
                 </div>
                 <div class="d-md-flex justify-content-between mb-4">
                     <ul class="list-inline mb-3">
                         <li class="list-inline-item mb-0">
                             <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
-                                Add
+                                Thêm
                             </a>
                             <div class="dropdown-menu">
-
-                                <a data-url="{{route('folder.createfolder',['id'=>$parentid])}}" href=""
-                                   class="dropdown-item action_add_folder">New Folder</a>
-
-                                <a href="{{route('file.index')}}" class="dropdown-item">New File</a>
+                                <a class="dropdown-item action_add_folder"
+                                   data-url="{{route('folder.createfolder',['id'=>$parentid])}}"
+                                   href="">Thư mục mới</a>
+                                <a class="dropdown-item" href="{{route('file.selected',['id'=>$parentid])}}">Tải lên</a>
                             </div>
                         </li>
                         <li class="list-inline-item mb-0">
@@ -118,18 +126,8 @@
                     <div id="file-actions" class="d-none">
                         <ul class="list-inline">
                             <li class="list-inline-item mb-0">
-                                <a href="#" class="btn btn-outline-light" data-toggle="tooltip" title="Move">
-                                    <i class="ti-arrow-top-right"></i>
-                                </a>
-                            </li>
-                            <li class="list-inline-item mb-0">
-                                <a href="#" class="btn btn-outline-light" data-toggle="tooltip"
-                                   title="Download">
-                                    <i class="ti-download"></i>
-                                </a>
-                            </li>
-                            <li class="list-inline-item mb-0">
-                                <a href="#" class="btn btn-outline-danger" data-toggle="tooltip" title="Delete">
+                                <a data-url="{{route('folder.multi_delete')}}" href="#" class="btn btn-outline-danger"
+                                   data-toggle="tooltip" title="Xóa" id="btn_customCheckDelete">
                                     <i class="ti-trash"></i>
                                 </a>
                             </li>
@@ -149,33 +147,42 @@
                             </th>
                             <th>Name</th>
                             <th>Modified</th>
+                            <th>Type</th>
 
-                            <th>Members</th>
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody id="table_list_folder_and_file">
+                        <tbody>
+                        {{--Danh sach file va folder--}}
                         @if(isset($listFolderAndFileForId) && $listFolderAndFileForId->count())
-                            <tr>
-                                {{$listFolderAndFileForId->links()}}
-                            </tr>
                             @foreach($listFolderAndFileForId as $listFolderAndFileForIdItem)
                                 <tr>
-                                    <td></td>
+                                    <td class="dt-body-center">
+                                        <div class="custom-control custom-checkbox">
+                                            <input name="customCheck" value="{{$listFolderAndFileForIdItem->id}}"
+                                                   type="checkbox"
+                                                   class="custom-control-input checkbox_children messageCheckbox"
+                                                   id="customCheck{{$listFolderAndFileForIdItem->id}}">
+                                            <label class="custom-control-label"
+                                                   for="customCheck{{$listFolderAndFileForIdItem->id}}"></label>
+                                        </div>
+                                    </td>
                                     <td>
                                         <a href="#" class="d-flex align-items-center">
                                             <figure class="avatar avatar-sm mr-3">
                                     <span
-                                        class="avatar-title {{($listFolderAndFileForIdItem->type =='folder')?'bg-warning':''}} text-black-50 rounded-pill">
+                                        class="avatar-title text-black-50 rounded-pill {{($listFolderAndFileForIdItem->type =='folder')?'bg-warning':''}}">
                                         <i class="
-                            @if($listFolderAndFileForIdItem->extenstion =='jpg')
-                                            ti-image
-                                            @elseif($listFolderAndFileForIdItem->extenstion =='png')
-                                            ti-image
-                                            @else
+                                        {{$ex = $listFolderAndFileForIdItem->extenstion}}
+                                        @if($ex =='jpg' ||$ex =='png')
+                                            ti-image {{$images_files = $images_files + 1}}{{$images_size = $images_size +$listFolderAndFileForIdItem->size}}
+                                        @elseif($ex =='docx' ||$ex =='txt')
+                                            ti-file {{$document_files = $document_files + 1}}{{$document_size = $document_size +$listFolderAndFileForIdItem->size}}
+                                        @elseif($ex =='mp4')
+                                            ti-video-camera {{$videos_files = $videos_files + 1}}{{$videos_size = $videos_size +$listFolderAndFileForIdItem->size}}
+                                        @else
                                             ti-folder
                                             @endif
-
                                             "></i>
                                     </span>
                                             </figure>
@@ -184,25 +191,44 @@
                                         class="text-primary">@if(strlen($listFolderAndFileForIdItem->name) > 30){{substr($listFolderAndFileForIdItem->name, 0, 30)}}
                                         ... @else {{$listFolderAndFileForIdItem->name}}@endif</span>
                                     <span
-                                        class="small font-italic">@if($listFolderAndFileForIdItem->size!=0) {{$listFolderAndFileForIdItem->size.' KB'}} @endif </span>
+                                        class="small font-italic">
+                                        @if(($bytes = $listFolderAndFileForIdItem->size) != 0)
+                                            @if ($bytes >= 1073741824)
+                                                {{
+                                                    $bytes = number_format($bytes / 1073741824, 2) . ' GB'
+                                                }}
+                                            @elseif ($bytes >= 1048576)
+                                                {{
+                                                    $bytes = number_format($bytes / 1048576, 2) . ' MB'
+                                                }}
+                                            @elseif ($bytes >= 1024)
+                                                {{
+                                                    $bytes = number_format($bytes / 1024, 2) . ' KB'
+                                                }}
+                                            @elseif ($bytes > 1)
+                                                {{
+                                                    $bytes = $bytes . ' bytes'
+                                                }}
+                                            @elseif ($bytes == 1)
+                                                {{
+                                                    $bytes = $bytes . ' byte'
+                                                }}
+                                            @else
+                                                {{
+                                                    $bytes = '0 bytes'
+                                                }}
+                                            @endif
+                                        @endif
+                                    </span>
                                 </span>
                                         </a>
                                     </td>
                                     <td>{{$listFolderAndFileForIdItem->updated_at}}</td>
-
                                     <td>
-                                        <div class="avatar-group">
-                                            <figure class="avatar avatar-sm"
-                                                    title="{{$listFolderAndFileForIdItem->getUserId->name}}"
-                                                    data-toggle="tooltip">
-                                                <img
-                                                    src="{{asset('file-manager-template/assets/media/image/user/man_avatar3.jpg')}}"
-                                                    class="rounded-circle"
-                                                    alt="image">
-                                            </figure>
-
-                                        </div>
+                                        <div
+                                            class="badge bg-info-bright text-info">{{($listFolderAndFileForIdItem->type =='folder')?'Folder':'File'}}</div>
                                     </td>
+
                                     <td class="text-right">
                                         <div class="dropdown">
                                             <a href="#" class="btn btn-floating" data-toggle="dropdown">
@@ -210,13 +236,12 @@
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-right">
                                                 @if($listFolderAndFileForIdItem->type =='file')
-                                                <a href="{{route('folder.download',['id'=>$listFolderAndFileForIdItem->id])}}"
-                                                   class="dropdown-item">Tải về</a>
-
-                                                <a href="{{route('folder.file_edit',['id'=>$listFolderAndFileForIdItem->id])}}"
-                                                   class="dropdown-item move_file_or_folder">Chỉnh sửa</a>
-
+                                                    <a href="{{route('folder.download',['id'=>$listFolderAndFileForIdItem->id])}}"
+                                                       class="dropdown-item">Tải về</a>
+                                                    <a href="{{route('folder.file_edit',['id'=>$listFolderAndFileForIdItem->id])}}"
+                                                       class="dropdown-item move_file_or_folder">Chỉnh sửa</a>
                                                 @endif
+
                                                 <a data-url="{{route('folder.delete',['id'=>$listFolderAndFileForIdItem->id])}}"
                                                    href="" class="dropdown-item action_delete_file_orFolder">Xóa</a>
                                             </div>
@@ -225,10 +250,12 @@
                                 </tr>
                             @endforeach
                         @endif
+                        {{--Danh sach file va folder--}}
                         </tbody>
                     </table>
                 </div>
                 {{--Phan danh sach file va folder--}}
+
             </div>
         </div>
     </div>
