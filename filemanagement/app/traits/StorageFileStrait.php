@@ -10,7 +10,7 @@ trait StorageFileStrait
 {
     public function createDirecrotory($feature_path)
     {
-        $directory = Storage::makeDirectory($feature_path);
+        $directory = Storage::makeDirectory(str_replace('/storage/', '', $feature_path));
 
         return Storage::url($directory);
     }
@@ -37,5 +37,6 @@ trait StorageFileStrait
     public function storageTraitMoveFile($oldfile, $newfile)
     {
         $path = Storage::move($oldfile, $newfile);
+        return Storage::url($path);
     }
 }

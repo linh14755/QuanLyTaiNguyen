@@ -212,9 +212,11 @@
                                                 @if($listFolderAndFileForIdItem->type =='file')
                                                 <a href="{{route('folder.download',['id'=>$listFolderAndFileForIdItem->id])}}"
                                                    class="dropdown-item">Tải về</a>
-                                                @endif
-                                                <a href="{{route('folder.edit',['id'=>$listFolderAndFileForIdItem->id])}}"
+
+                                                <a href="{{route('folder.file_edit',['id'=>$listFolderAndFileForIdItem->id])}}"
                                                    class="dropdown-item move_file_or_folder">Chỉnh sửa</a>
+
+                                                @endif
                                                 <a data-url="{{route('folder.delete',['id'=>$listFolderAndFileForIdItem->id])}}"
                                                    href="" class="dropdown-item action_delete_file_orFolder">Xóa</a>
                                             </div>

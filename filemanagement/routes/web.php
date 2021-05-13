@@ -49,15 +49,16 @@ Route::prefix('admin')->group(function () {
             'uses' => 'FileManagerController@selectedFolder'
         ]);
 
-        Route::get('/edit/{id}', [
-            'as' => 'folder.edit',
+        Route::get('/file_edit/{id}', [
+            'as' => 'folder.file_edit',
             'uses' => 'FileManagerController@editFileOrFolder'
         ]);
 
-        Route::post('/update/{id}', [
-            'as' => 'folder.update',
-            'uses' => 'FileManagerController@updateFileOrFolder'
+        Route::post('/update_file/{id}', [
+            'as' => 'folder.update_file',
+            'uses' => 'FileManagerController@updateFile'
         ]);
+
         Route::get('/download/{id}', [
             'as' => 'folder.download',
             'uses' => 'FileManagerController@downLoadFile'

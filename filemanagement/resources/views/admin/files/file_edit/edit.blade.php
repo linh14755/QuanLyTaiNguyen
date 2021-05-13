@@ -27,7 +27,7 @@
                                 'selected': true
                             },
                             @endif
-                            @include('admin.files.rootedit',['folder'=>$folder,'parentid'=>$parentid])
+                            @include('admin.files.file_edit.rootedit',['folder'=>$folder,'parentid'=>$parentid])
                         },
                         @endif
                         @endforeach
@@ -47,7 +47,7 @@
 @section('content')
 
     <div class="content">
-        <form class="col-md-6" action="{{route('folder.update',['id'=>$file_edit->id])}}" method="post"
+        <form class="col-md-6" action="{{route('folder.update_file',['id'=>$file_edit->id])}}" method="post"
               enctype="multipart/form-data">
             @csrf
             <div class="mb-3">

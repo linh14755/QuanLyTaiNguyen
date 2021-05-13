@@ -56,7 +56,9 @@ class FileManagerController extends Controller
                 $feature_path = 'root/' . $folderName;
             }
 
-            $path = $this->createDirecrotory($feature_path);
+            $feature_path = str_replace('/storage/', '', $feature_path);
+
+            $this->createDirecrotory($feature_path);
 
             $folder_de_load_js = $this->fileManager->create([
                 'name' => $folderName,
@@ -100,15 +102,14 @@ class FileManagerController extends Controller
 
         if ($file_or_folder_edit->type == 'file') {
 
+            //Edit files
             $listFolder = $this->fileManager->where('type', 'folder')->get();
             $file_edit = $file_or_folder_edit;
-            return view('admin.files.editfile', compact('listFolder', 'file_edit'));
-        } else {
-            dd('folder');
+            return view('admin.files.file_edit.edit', compact('listFolder', 'file_edit'));
         }
     }
 
-    public function updateFileOrFolder(Request $request, $id)
+    public function updateFile(Request $request, $id)
     {
         $oldfile = $this->fileManager->find($id);
         $oldfile = str_replace('/storage/', '', $oldfile->feature_path);
@@ -134,6 +135,7 @@ class FileManagerController extends Controller
 
         return redirect()->route('folder.selected', ['id' => $request->parent_id]);
     }
+
 
     public function downLoadFile($id)
     {
