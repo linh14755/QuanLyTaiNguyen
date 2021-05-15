@@ -76,7 +76,7 @@ class FileController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('file.selected', ['id' => $id]);
+            return redirect()->route('folder.selected', ['id' => $id]);
 
         } catch (\Exception $exception) {
             Log::error('Message' . $exception->getMessage() . ' ------Line ' . $exception->getLine());

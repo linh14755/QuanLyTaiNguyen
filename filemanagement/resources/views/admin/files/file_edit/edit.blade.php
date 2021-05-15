@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('title')
-    <title>Edit</title>
+    <title>Edit File</title>
 @endsection
 
 @section('js')

@@ -64,6 +64,11 @@ Route::prefix('admin')->group(function () {
             'uses' => 'FileManagerController@downLoadFile'
         ]);
 
+        Route::get('/multi_edit_download', [
+            'as' => 'folder.multi_edit_download',
+            'uses' => 'FileManagerController@editDownLoadMultiFile'
+        ]);
+
         Route::get('/delete/{id}', [
             'as' => 'folder.delete',
             'uses' => 'FileManagerController@deleteFile'
@@ -97,6 +102,56 @@ Route::prefix('admin')->group(function () {
             'as' => 'dashboard.index',
             'uses' => 'DashboardController@index'
         ]);
+
+        Route::get('/selected/{id}', [
+            'as' => 'dashboard.selected',
+            'uses' => 'DashboardController@selectedCategory'
+        ]);
+
+    });
+
+
+    //Users
+    Route::prefix('user')->group(function () {
+        Route::get('/', [
+            'as' => 'user.index',
+            'uses' => 'UserController@index'
+        ]);
+
+        Route::get('/create', [
+            'as' => 'user.create',
+            'uses' => 'UserController@create'
+        ]);
+
+        Route::post('/store', [
+            'as' => 'user.store',
+            'uses' => 'UserController@store'
+        ]);
+
+        Route::get('/edit/{id}', [
+            'as' => 'user.edit',
+            'uses' => 'UserController@edit'
+        ]);
+
+        Route::post('/update/{id}', [
+            'as' => 'user.update',
+            'uses' => 'UserController@update'
+        ]);
+
+        Route::get('/delete/{id}', [
+            'as' => 'user.delete',
+            'uses' => 'UserController@delete'
+        ]);
+
+    });
+
+    //Roles
+    Route::prefix('role')->group(function () {
+        Route::get('/', [
+            'as' => 'role.index',
+            'uses' => 'RoleController@index'
+        ]);
+
     });
 
 });

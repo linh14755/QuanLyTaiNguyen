@@ -1,0 +1,12 @@
+.select2-selection__choice{
+    background: #007bff !important;
+    color: white;
+}
+.alert-danger-custom{
+    background-color: #fff;
+    color: #d32535;
+    border: none;
+    margin-left: -2px;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.9em;
+}

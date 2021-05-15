@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('title')
-    <title>Filedash - File Manager Dashboard</title>
+    <title>Tải lên</title>
 @endsection
 
 @section('js')

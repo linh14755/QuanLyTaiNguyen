@@ -151,7 +151,7 @@
                            data-toggle="dropdown">
                             <span class="mr-2 d-sm-inline d-none">@if(isset(auth()->user()->name)) {{auth()->user()->name}} @endif</span>
                             <figure class="avatar avatar-sm">
-                                <img src="{{asset('file-manager-template/assets/media/image/user/man_avatar3.jpg')}}"
+                                <img src="@if(isset(auth()->user()->image_path)) {{asset(auth()->user()->image_path)}} @endif"
                                      class="rounded-circle"
                                      alt="avatar">
                             </figure>
@@ -160,7 +160,7 @@
                             <div class="text-center py-4"
                                  data-background-image="{{asset('file-manager-template/assets/media/image/image1.jpg')}}">
                                 <figure class="avatar avatar-lg mb-3 border-0">
-                                    <img src="{{asset('file-manager-template/assets/media/image/user/man_avatar3.jpg')}}"
+                                    <img src="@if(isset(auth()->user()->image_path)) {{asset(auth()->user()->image_path)}} @endif"
                                          class="rounded-circle" alt="image">
                                 </figure>
                                 <h5 class="mb-0">@if(isset(auth()->user()->name)) {{auth()->user()->name}} @endif</h5>

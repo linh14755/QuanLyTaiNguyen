@@ -28,7 +28,7 @@
 {{--    <link rel="stylesheet" href="{{asset('file-manager-template/vendors/datepicker/daterangepicker.css')}}"--}}
 {{--          type="text/css">--}}
 
-    <!-- Datatable -->
+<!-- Datatable -->
     <link rel="stylesheet" href="{{asset('file-manager-template/vendors/dataTable/datatables.min.css')}}"
           type="text/css">
 
@@ -36,7 +36,7 @@
 {{--    <link rel="stylesheet" href="{{asset('file-manager-template/vendors/select2/css/select2.min.css')}}"--}}
 {{--          type="text/css">--}}
 
-    <!-- App css -->
+<!-- App css -->
     <link rel="stylesheet" href="{{asset('file-manager-template/assets/css/app.min.css')}}" type="text/css">
 
     <!--Icon-->
@@ -66,17 +66,17 @@
         <!-- Content body -->
         <div class="content-body">
             <!-- Content -->
-            @yield('content')
-            <!-- ./ Content -->
+        @yield('content')
+        <!-- ./ Content -->
 
             <!-- Footer -->
-{{--            @include('partial.footer')--}}
-            <!-- ./ Footer -->
+        {{--            @include('partial.footer')--}}
+        <!-- ./ Footer -->
         </div>
         <!-- ./ Content body -->
 
         <!-- Sidebar group -->
-    @include('partial.sidebar')
+{{--    @include('partial.sidebar')--}}
     <!-- ./ Sidebar group -->
     </div>
     <!-- ./ Content wrapper -->

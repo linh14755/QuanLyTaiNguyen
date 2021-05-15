@@ -27,7 +27,6 @@ class FileManagerController extends Controller
     {
         $listFolder = $this->fileManager->where('type', 'folder')->get();
 
-
         $feature_path_show = 'root';
 
         return view('admin.files.index', compact('listFolder', 'feature_path_show'));
@@ -89,7 +88,7 @@ class FileManagerController extends Controller
 
     public function selectedFolder($id)
     {
-        $listFolderAndFileForId = $this->fileManager->where('parent_id', $id)->get(); //lay ca folder va file theo parent id
+        $listFolderAndFileForId = $this->fileManager->where('parent_id', $id)->latest()->get(); //lay ca folder va file theo parent id
         $listFolder = $this->fileManager->where('type', 'folder')->get();
 
         $root_parent = $this->fileManager->find($id);
@@ -180,14 +179,52 @@ class FileManagerController extends Controller
 
     public function deleteMultiFile(Request $request)
     {
-        foreach ($request->arr_id as $id) {
-            $this->deleteFile($id);
-        }
+        try {
+            foreach ($request->arr_id as $id) {
+                $this->deleteFile($id);
+            }
 
-        return response()->json([
-            'code' => 200,
-            'message' => 'success',
-        ], 200);
+            return response()->json([
+                'code' => 200,
+                'message' => 'success',
+            ], 200);
+
+        } catch (\Exception $exception) {
+            Log::error('Message' . $exception->getMessage() . ' ------Line ' . $exception->getLine());
+
+            return response()->json([
+                'code' => 500,
+                'message' => 'fail'
+            ], 500);
+        }
+    }
+
+    public function editDownLoadMultiFile(Request $request)
+    {
+        if ($request->checkCheck == 'checkDownload') {
+
+            //down load multi file
+            $zip = new ZipArchive();
+            $fileName = 'app/myZip.zip';
+
+            if (file_exists(storage_path($fileName))) {
+                Storage::delete('myZip.zip');
+            }
+
+            if ($zip->open(storage_path($fileName), ZipArchive::CREATE) === TRUE) {
+
+                foreach ($request->customCheck as $id) {
+                    $file_down_load = $this->fileManager->find($id);
+                    $file = File::get(storage_path(str_replace('/storage/', 'app/', $file_down_load->feature_path), $file_down_load->name));
+
+                    $zip->addFromString('myZip/' . $file_down_load->name, $file);
+                }
+
+                $zip->close();
+
+                return Storage::download('myZip.zip');
+            }
+        }
     }
 
 }

@@ -20,19 +20,19 @@
         <li>
             <a href="{{route('file.index')}}">
                 <i class="nav-link-icon ti-upload"></i>
-                <span class="nav-link-label">Upload File</span>
+                <span class="nav-link-label">Tải lên</span>
             </a>
         </li>
         <li>
-            <a href="users.html">
+            <a href="{{route('user.index')}}">
                 <i class="nav-link-icon ti-user"></i>
-                <span class="nav-link-label">Users</span>
+                <span class="nav-link-label">Người dùng</span>
             </a>
         </li>
         <li class="flex-grow-1">
-            <a href="alert.html">
-                <i class="nav-link-icon ti-layers"></i>
-                <span class="nav-link-label">Components</span>
+            <a href="{{route('role.index')}}">
+                <i class="nav-link-icon ti-thumb-up"></i>
+                <span class="nav-link-label">Vai trò</span>
             </a>
         </li>
         <li>

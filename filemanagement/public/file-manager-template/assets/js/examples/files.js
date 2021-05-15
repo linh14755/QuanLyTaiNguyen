@@ -44,17 +44,15 @@ $(function () {
         }
     });
 
-    //Lay danh sach checked
+
+    //Lay danh sach checked dung de delete
     $('#btn_customCheckDelete').on('click', function (event) {
         event.preventDefault();
-        var arr_id = new Array();
-        $("input:checkbox[name=customCheck]:checked").each(function () {
+        var searchIDs = $("#tableSearchInput input:checkbox:checked").map(function(){
+            return $(this).val();
+        }).toArray();
 
-            // console.log($(this).val());
-            arr_id.push($(this).val());
-
-        });
-
+        // console.log(searchIDs);
         let urlRequest = $(this).data('url');
 
         Swal.fire({
@@ -70,11 +68,10 @@ $(function () {
                 $.ajax({
                     type: 'GET',
                     url: urlRequest,
-                    data: {arr_id: arr_id},
+                    data: {arr_id: searchIDs},
 
                     success: function (data) {
                         if (data.code == 200) {
-
                             location.reload(); //reload lai trang sau khi delete
                         }
                     },
@@ -85,6 +82,7 @@ $(function () {
             }
         })
     })
+
 
 });
 

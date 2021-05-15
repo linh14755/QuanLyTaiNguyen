@@ -1,9 +1,20 @@
 $(function () {
     $(document).on('click', '.action_add_folder', actionAddFolder);
-});
 
-$(function () {
     $(document).on('click', '.action_delete_file_orFolder', actionDeleteFileOrFolder);
+
+    //Thanh tim kiem
+    $(document).ready(function () {
+        $('#searchInput').on('keyup', function (event) {
+            event.preventDefault();
+            /* Act on the event */
+            var tukhoa = $(this).val().toLowerCase();
+            $('#tableSearchInput tr').filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(tukhoa) > -1);
+            });
+        });
+    });
+
 });
 
 function actionAddFolder(event) {
@@ -79,8 +90,7 @@ function actionDeleteFileOrFolder(event) {
 
                 success: function (data) {
                     if (data.code == 200) {
-
-                        location.reload(); //reload lai trang sau khi delete
+                        that.parent().parent().parent().parent().remove();
                     }
                 },
                 error: function () {
