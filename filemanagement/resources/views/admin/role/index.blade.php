@@ -23,7 +23,10 @@
             </div>
             <div class="col-xl-9">
                 <div class="content-title mt-0 ">
-                    <h4>Người dùng<a href="" class="btn btn-outline-success float-right">Add</a>
+                    <h4>Vai trò
+                        @can('add_role')
+                            <a href="{{route('role.create')}}" class="btn btn-outline-success float-right">Add</a>
+                        @endcan
                     </h4>
                 </div>
 
@@ -47,12 +50,15 @@
                             <td>{{$role->display_name}}</td>
 
                             <td>
-                                <a href="{{route('user.edit',['id'=>$role->id])}}"
-                                   class="btn btn-outline-github">Edit</a>
-
-                                <a href=""
-                                   data-url="{{route('user.delete',['id'=>$role->id])}}"
-                                   class="btn btn-outline-danger action_delete">Delete</a>
+                                @can('edit_role')
+                                    <a href="{{route('role.edit',['id'=>$role->id])}}"
+                                       class="btn btn-outline-github">Edit</a>
+                                @endcan
+                                @can('delete_role')
+                                    <a href=""
+                                       data-url="{{route('role.delete',['id'=>$role->id])}}"
+                                       class="btn btn-outline-danger action_delete">Delete</a>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach

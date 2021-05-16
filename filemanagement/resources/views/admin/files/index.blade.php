@@ -104,11 +104,15 @@
                                     Thêm
                                 </a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item action_add_folder"
-                                       data-url="{{route('folder.createfolder',['id'=>$parentid])}}"
-                                       href="">Thư mục mới</a>
-                                    <a class="dropdown-item" href="{{route('file.selected',['id'=>$parentid])}}">Tải
-                                        lên</a>
+                                    @can('add_folder_files')
+                                        <a class="dropdown-item action_add_folder"
+                                           data-url="{{route('folder.createfolder',['id'=>$parentid])}}"
+                                           href="">Thư mục mới</a>
+                                    @endcan
+                                    @can('upload_file_upload')
+                                        <a class="dropdown-item" href="{{route('file.selected',['id'=>$parentid])}}">Tải
+                                            lên</a>
+                                    @endcan
                                 </div>
                             </li>
 
@@ -122,27 +126,29 @@
                         </ul>
                         <div id="file-actions" class="d-none">
                             <ul class="list-inline">
+                                @can('download_files')
+                                    <li class="list-inline-item mb-0">
+                                        <button type="submit" class="btn btn-primary">Đồng ý</button>
+                                    </li>
 
-                                <li class="list-inline-item mb-0">
-                                    <button type="submit" class="btn btn-primary">Đồng ý</button>
-                                </li>
 
-
-                                <li class="list-inline-item mb-0">
-                                    <div class="form-group p-1 border border-primary rounded">
-                                        <input type="radio" value="checkDownload" name="checkCheck">
-                                        <lable>Tải xuống</lable>
-                                        <i class="ti-download"></i>
-                                    </div>
-                                </li>
-
-                                <li class="list-inline-item mb-0">
-                                    <a data-url="{{route('folder.multi_delete')}}" href="#"
-                                       class="btn btn-outline-danger"
-                                       data-toggle="tooltip" title="Xóa" id="btn_customCheckDelete">
-                                        <i class="ti-trash"></i>
-                                    </a>
-                                </li>
+                                    <li class="list-inline-item mb-0">
+                                        <div class="form-group p-1 border border-primary rounded">
+                                            <input type="radio" value="checkDownload" name="checkCheck">
+                                            <lable>Tải xuống</lable>
+                                            <i class="ti-download"></i>
+                                        </div>
+                                    </li>
+                                @endcan
+                                @can('delete_files')
+                                    <li class="list-inline-item mb-0">
+                                        <a data-url="{{route('folder.multi_delete')}}" href="#"
+                                           class="btn btn-outline-danger"
+                                           data-toggle="tooltip" title="Xóa" id="btn_customCheckDelete">
+                                            <i class="ti-trash"></i>
+                                        </a>
+                                    </li>
+                                @endcan
 
                             </ul>
                         </div>
@@ -187,8 +193,8 @@
                                                     <figure class="avatar avatar-sm mr-3"
                                                         {{$ex = $listFolderAndFileForIdItem->extenstion}}>
                                                         @if($ex =='jpg' ||$ex =='png')
-                                                        <span
-                                                            class="bg-success avatar-title text-black-50 rounded-pill">
+                                                            <span
+                                                                class="bg-success avatar-title text-black-50 rounded-pill">
                                                             <i class="ti-image {{$images_files = $images_files + 1}}{{$images_size = $images_size +$listFolderAndFileForIdItem->size}}"></i>
                                                         </span>
 
@@ -269,15 +275,20 @@
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right">
                                                         @if($listFolderAndFileForIdItem->type =='file')
-                                                            <a href="{{route('folder.download',['id'=>$listFolderAndFileForIdItem->id])}}"
-                                                               class="dropdown-item">Tải về</a>
+                                                            @can('download_files')
+                                                                <a href="{{route('folder.download',['id'=>$listFolderAndFileForIdItem->id])}}"
+                                                                   class="dropdown-item">Tải về</a>
+                                                            @endcan
+                                                            @can('edit_files');
                                                             <a href="{{route('folder.file_edit',['id'=>$listFolderAndFileForIdItem->id])}}"
                                                                class="dropdown-item move_file_or_folder">Chỉnh sửa</a>
+                                                            @endcan
                                                         @endif
-
+                                                        @can('delete_files');
                                                         <a data-url="{{route('folder.delete',['id'=>$listFolderAndFileForIdItem->id])}}"
                                                            href=""
                                                            class="dropdown-item action_delete_file_orFolder">Xóa</a>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </td>

@@ -30,7 +30,7 @@
 
 @section('content')
 
-    <form action="{{route('folder.multi_edit_download')}}">
+    <form action="{{route('dashboard.multi_download')}}">
 
         <div class="content">
             <div class="page-header d-flex justify-content-between">
@@ -51,7 +51,8 @@
 
                                 <div>
                                     <div class="list-group list-group-flush mb-3">
-                                        <a href="{{route('dashboard.selected',['id'=>'images'])}}" class="list-group-item px-0 d-flex align-items-center">
+                                        <a href="{{route('dashboard.selected',['id'=>'images'])}}"
+                                           class="list-group-item px-0 d-flex align-items-center">
                                             <div class="mr-3">
                                                 <figure class="avatar">
                                         <span class="avatar-title bg-primary-bright text-primary rounded">
@@ -65,7 +66,8 @@
                                             </div>
 
                                         </a>
-                                        <a href="{{route('dashboard.selected',['id'=>'videos'])}}" class="list-group-item px-0 d-flex align-items-center">
+                                        <a href="{{route('dashboard.selected',['id'=>'videos'])}}"
+                                           class="list-group-item px-0 d-flex align-items-center">
                                             <div class="mr-3">
                                                 <figure class="avatar">
                                         <span class="avatar-title bg-primary-bright text-primary rounded">
@@ -79,7 +81,8 @@
                                             </div>
 
                                         </a>
-                                        <a href="{{route('dashboard.selected',['id'=>'documents'])}}" class="list-group-item px-0 d-flex align-items-center">
+                                        <a href="{{route('dashboard.selected',['id'=>'documents'])}}"
+                                           class="list-group-item px-0 d-flex align-items-center">
                                             <div class="mr-3">
                                                 <figure class="avatar">
                                         <span class="avatar-title bg-primary-bright text-primary rounded">
@@ -93,7 +96,8 @@
                                             </div>
 
                                         </a>
-                                        <a href="{{route('dashboard.selected',['id'=>'other_files'])}}" class="list-group-item px-0 d-flex align-items-center">
+                                        <a href="{{route('dashboard.selected',['id'=>'other_files'])}}"
+                                           class="list-group-item px-0 d-flex align-items-center">
                                             <div class="mr-3">
                                                 <figure class="avatar">
                                         <span class="avatar-title bg-primary-bright text-primary rounded">
@@ -132,27 +136,27 @@
                         </ul>
                         <div id="file-actions" class="d-none">
                             <ul class="list-inline">
-
-                                <li class="list-inline-item mb-0">
-                                    <button type="submit" class="btn btn-primary">Đồng ý</button>
-                                </li>
-
-
-                                <li class="list-inline-item mb-0">
-                                    <div class="form-group p-1 border border-primary rounded">
-                                        <input type="radio" value="checkDownload" name="checkCheck">
-                                        <lable>Tải xuống</lable>
-                                        <i class="ti-download"></i>
-                                    </div>
-                                </li>
-
-                                <li class="list-inline-item mb-0">
-                                    <a data-url="{{route('folder.multi_delete')}}" href="#"
-                                       class="btn btn-outline-danger"
-                                       data-toggle="tooltip" title="Xóa" id="btn_customCheckDelete">
-                                        <i class="ti-trash"></i>
-                                    </a>
-                                </li>
+                                @can('download_dashboard')
+                                    <li class="list-inline-item mb-0">
+                                        <button type="submit" class="btn btn-primary">Đồng ý</button>
+                                    </li>
+                                    <li class="list-inline-item mb-0">
+                                        <div class="form-group p-1 border border-primary rounded">
+                                            <input type="radio" value="checkDownload" name="checkCheck">
+                                            <lable>Tải xuống</lable>
+                                            <i class="ti-download"></i>
+                                        </div>
+                                    </li>
+                                @endcan
+                                @can('delete_dashboard')
+                                    <li class="list-inline-item mb-0">
+                                        <a data-url="{{route('dashboard.multi_delete')}}" href="#"
+                                           class="btn btn-outline-danger"
+                                           data-toggle="tooltip" title="Xóa" id="btn_customCheckDelete">
+                                            <i class="ti-trash"></i>
+                                        </a>
+                                    </li>
+                                @endcan
 
                             </ul>
                         </div>
@@ -177,7 +181,7 @@
                             </thead>
                             <tbody id="tableSearchInput">
                             {{--Danh sach file va folder--}}
-                            @if(isset($listFilesNew))
+                            @if(isset($listFilesNew) && $listFilesNew != null)
                                 @foreach($listFilesNew as $listFilesNewItem)
                                     @if($listFilesNewItem->type == 'file')
                                         <tr>
@@ -268,14 +272,17 @@
                                                         <i class="ti-more-alt"></i>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                        @if($listFilesNewItem->type =='file')
-                                                            <a href="{{route('folder.download',['id'=>$listFilesNewItem->id])}}"
-                                                               class="dropdown-item">Tải về</a>
-                                                        @endif
-
-                                                        <a data-url="{{route('folder.delete',['id'=>$listFilesNewItem->id])}}"
-                                                           href=""
-                                                           class="dropdown-item action_delete_file_orFolder">Xóa</a>
+                                                        @can('download_dashboard')
+                                                            @if($listFilesNewItem->type =='file')
+                                                                <a href="{{route('dashboard.download',['id'=>$listFilesNewItem->id])}}"
+                                                                   class="dropdown-item">Tải về</a>
+                                                            @endif
+                                                        @endcan
+                                                        @can('delete_dashboard')
+                                                            <a data-url="{{route('dashboard.delete',['id'=>$listFilesNewItem->id])}}"
+                                                               href=""
+                                                               class="dropdown-item action_delete_file_orFolder">Xóa</a>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </td>

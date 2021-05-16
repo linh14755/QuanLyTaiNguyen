@@ -41,7 +41,7 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
             $path = '';
-            if(!empty($_FILES['image_path']['name'])){
+            if (!empty($_FILES['image_path']['name'])) {
                 $file = $_FILES['image_path']['tmp_name'];
                 $path = $_FILES['image_path']['name'];
                 $path_parts = pathinfo($path);
@@ -58,7 +58,7 @@ class UserController extends Controller
             $roleIds = $request->role_id;
 
             $user->roles()->attach($roleIds);
-            if(!empty($_FILES['image_path']['name'])){
+            if (!empty($_FILES['image_path']['name'])) {
                 move_uploaded_file($file, $path);
             }
 
@@ -81,11 +81,12 @@ class UserController extends Controller
 
     public function update(UserEditRequest $request, $id)
     {
+
         try {
             DB::beginTransaction();
-            $path= $this->user->find($id)->image_path;
+            $path = $this->user->find($id)->image_path;
 
-            if(!empty($_FILES['image_path']['name'])){
+            if (!empty($_FILES['image_path']['name'])) {
                 $file = $_FILES['image_path']['tmp_name'];
                 $path = $_FILES['image_path']['name'];
                 $path_parts = pathinfo($path);
@@ -96,16 +97,20 @@ class UserController extends Controller
             $this->user->find($id)->update([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
                 'image_path' => $path
             ]);
+            if ($request->password != null) {
+                $this->user->find($id)->update([
+                    'password' => Hash::make($request->password),
+                ]);
+            }
 
             $user = $this->user->find($id);
             $roleIds = $request->role_id;
 
             $user->roles()->sync($roleIds);
 
-            if(!empty($_FILES['image_path']['name'])){
+            if (!empty($_FILES['image_path']['name'])) {
                 move_uploaded_file($file, $path);
             }
 

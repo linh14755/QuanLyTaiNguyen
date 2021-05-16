@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use  Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -23,8 +24,10 @@ class AdminController extends Controller
             'email' => $request->email,
             'password' => $request->password
         ], $remember)) {
+
             return redirect()->to('admin/home');
         } else {
+
             return view('login');
         }
     }
